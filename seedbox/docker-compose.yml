@@ -41,7 +41,7 @@ services:
           ROUTE: '192.168.1.0/24'
           #DNS: ''
           FIREWALL: ''
-          VPN: 'yourvpnconnection'
+          #VPN: 'YOUR_VPN_CONNECTION_STR'
           VPNPORT: 24918
           GROUPID: 1000
       tmpfs:
