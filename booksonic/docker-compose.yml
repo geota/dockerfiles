@@ -1,0 +1,16 @@
+version: '3'
+services:
+    booksonic:
+        container_name: booksonic
+        image: linuxserver/booksonic
+        environment:
+          PGID: 1000
+          PUID: 1000
+          TZ: America/Chicago
+        ports:
+         - 4040:4040 
+        volumes:
+          - /home/geota/.config/booksonic:/config
+          - /home/geota/downloads/podcasts:/podcasts
+          - /home/geota/downloads/audiobooks:/books
+        restart: always

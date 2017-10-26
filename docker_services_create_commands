@@ -1,0 +1,69 @@
+docker create --name=zoneminder --shm-size=4096m -p 9999:80 -e PGID=1000 -e PUID=1000 -e TZ=America/Chicago quantumobject/docker-zoneminder
+
+docker create --name=rutorrent \
+		-v /home/geota/.config/rutorrent:/config \
+		-v /home/geota/downloads:/downloads \
+		-e PGID=1000 -e PUID=1000 \
+		-e TZ=America/Chicago \
+		-p 8888:80 -p 5000:5000 \
+		-p 51413:51413 -p 6881:6881/udp linuxserver/rutorrent
+		
+docker create \
+	--name sonarr \
+	-p 8989:8989 \
+	-e PGID=1000 -e PUID=1000 \
+	-e TZ=America/Chicago \
+	-v /etc/localtime:/etc/localtime:ro \
+	-v /home/geota/.config/sonarr:/config \
+	-v /home/geota/downloads/tv:/tv \
+	-v /home/geota/downloads:/downloads \
+	linuxserver/sonarr
+	
+	docker create \
+		--name=plex \
+		--net=host \
+		-e VERSION=latest \
+		-e PGID=1000 -e PUID=1000 \
+		-e TZ=America/Chicago \
+		-v /home/geota/.config/plex:/config \
+		-v /home/geota/downloads:/data \
+		-v /home/geota/downloads/movies:/data/movies \
+		-v /home/geota/downloads/tv:/data/tv \
+		-v /home/geota/.transcode:/transcode \
+		linuxserver/plex
+		
+docker create \
+  --name=radarr \
+    -v /home/geota/.config/radarr:/config \
+    -v /home/geota/downloads:/downloads \
+    -v /home/geota/downloads/movies:/movies \
+    -v /etc/localtime:/etc/localtime:ro \
+	-e PGID=1000 -e PUID=1000 \
+	-e TZ=America/Chicago \
+    -p 7878:7878 \
+  linuxserver/radarr
+  
+  docker create --name=zoneminder -d --shm-size=4096m -p 9890:80 quantumobject/docker-zoneminder
+  
+  docker create \
+		--name=jackett \
+		-v /home/geota/.config/jackett:/config \
+		-v /home/geota/downloads:/downloads \
+		-e PGID=1000 -e PUID=1000 \
+		-e TZ=America/Chicago \
+		-v /etc/localtime:/etc/localtime:ro \
+		-p 9117:9117 \
+		linuxserver/jackett
+
+
+
+
+docker create \
+    --name="headphones" \
+    -v /home/geota/.config/headphones:/config \
+    -v /home/downloads:/downloads \
+    -v /home/downloads/music:/music \
+    -e PGID=1000 -e PUID=1000 \
+    -e TZ=America/Chicago \
+    -p 8181:8181 \
+    linuxserver/headphones

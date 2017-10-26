@@ -1,0 +1,16 @@
+version: '3'
+services:
+    mylar:
+        container_name: mylar
+        image: linuxserver/mylar
+        environment:
+          PGID: 1000
+          PUID: 1000
+          TZ: America/Chicago
+        ports:
+         - 8090:8090 
+        volumes:
+          - /home/geota/.config/mylar:/config
+          - /home/geota/downloads/comics:/comics
+          - /home/geota/downloads:/downloads
+        restart: always

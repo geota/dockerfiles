@@ -1,0 +1,4 @@
+check host ovpn with address 8.8.8.8
+if failed
+    icmp type echo count 6 with timeout 30 seconds
+then exec "/usr/bin/pkill -f openvpn"

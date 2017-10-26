@@ -1,0 +1,15 @@
+version: '3'
+services:
+    booksonic:
+        container_name: gazee
+        image: linuxserver/gazee
+        environment:
+          PGID: 1000
+          PUID: 1000
+          TZ: America/Chicago
+        ports:
+          - 4242:4242
+        volumes:
+          - /home/geota/.config/comics:/config
+          - /home/geota/downloads/comics:/comics
+        restart: always

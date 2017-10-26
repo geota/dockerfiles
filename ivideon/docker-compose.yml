@@ -1,0 +1,17 @@
+version: '3'
+services:
+  ivideon:
+    sysctls:
+      - net.ipv6.conf.all.disable_ipv6=0
+    cap_add:
+      - net_admin
+    container_name: ivideon
+    image: didstopia/ivideon-server
+    environment:
+     - TZ=America/Chicago
+     - WEB_INTERFACE_ENABLED=true
+    ports:
+     - 8196:80
+    volumes:
+      - /home/geota/.config/ivideon/config:/opt/ivideon/videoserverd
+      - /home/geota/.config/ivideon/archive:/video_archive

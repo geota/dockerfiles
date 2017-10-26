@@ -1,0 +1,13 @@
+version: '3'
+services:
+  cryptpad:
+    image: wonderfall/cryptpad
+    container_name: cryptpad
+    ports:
+      - 3001:3000
+    environment:
+      UID: 1000
+      GID: 1000
+    volumes:
+      - /home/geota/.config/cryptpad/files:/cryptpad/datastore
+      - /home/geota/.config/cryptpad/customize:/cryptpad/customize

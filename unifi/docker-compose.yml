@@ -1,0 +1,19 @@
+version: '3'
+services:
+    unifi:
+        container_name: unifi 
+        image: linuxserver/unifi
+        environment:
+          PGID: 1000
+          PUID: 1000
+          TZ: America/Chicago
+        ports:
+         - 8080:8080
+         - 8081:8081
+         - 8443:8443
+         - 8843:8843
+         - 8880:8880
+         - 3478:3478/udp
+        volumes:
+          - /home/geota/.config/unifi:/config
+        restart: always

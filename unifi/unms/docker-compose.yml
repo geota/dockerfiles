@@ -1,0 +1,119 @@
+version: '2'
+
+networks:
+  public:
+    internal: false
+    
+  internal:
+    internal: true
+    
+
+services:
+  fluentd:
+    container_name: unms-fluentd
+    build: ./fluentd
+    # if we specify an image name, docker-compose will try to pull it from repository
+    # see https://github.com/docker/compose/issues/3673
+    # image: ubnt/unms-fluentd:local
+    restart: always
+    networks:
+      - public
+    ports:
+      - 127.0.0.1:24224:24224
+    volumes:
+      - /home/geota/.config/unms/app/conf/fluentd.conf:/etc/fluent/fluent.conf
+      - /home/geota/.config/unms/data/logs:/fluentd/log
+    environment:
+      - FLUENTD_UID=1000
+
+  redis:
+    container_name: unms-redis
+    image: redis:3.2.8-alpine
+    user: "1000"
+    restart: always
+    depends_on:
+      - fluentd
+    networks:
+      - internal
+    volumes:
+      - /home/geota/.config/unms/data/redis:/data/db
+    logging:
+      driver: fluentd
+      options:
+        tag: "redis"
+        fluentd-async-connect: "true"
+    command: "redis-server --appendonly yes --dir /data/db/"
+
+  # we still run postgres as root with stepdown to uid 70 until this issue is fixed
+  # https://github.com/docker-library/postgres/issues/264
+  # and until it's not required to expose host's /etc/passwd to the container
+  # https://hub.docker.com/_/postgres/ (see "Arbitrary --user Notes")
+  postgres:
+    container_name: unms-postgres
+    image: postgres:9.6.1-alpine
+    restart: always
+    depends_on:
+      - fluentd
+    networks:
+      - internal
+    volumes:
+      - /home/geota/.config/unms/data/postgres:/var/lib/postgresql/data/pgdata
+    logging:
+      driver: fluentd
+      options:
+        tag: "postgres"
+        fluentd-async-connect: "true"
+    environment:
+      - POSTGRES_DB=unms
+      - PGDATA=/var/lib/postgresql/data/pgdata
+
+  rabbitmq:
+    container_name: unms-rabbitmq
+    image: rabbitmq:3
+    restart: always
+    networks:
+      - internal
+    logging:
+      driver: fluentd
+      options:
+        tag: "rabbitmq"
+        fluentd-async-connect: "true"
+
+  unms:
+    container_name: unms
+    image: ubnt/unms:0.10.2
+    restart: always
+    depends_on:
+      - fluentd
+      - redis
+      - postgres
+    networks:
+      - internal
+      - public
+    volumes:
+      - /home/geota/.config/unms/data:/home/app/unms/data
+      
+    ports:
+      - 9876:8080
+      - 443:8443
+      
+    logging:
+      driver: fluentd
+      options:
+        tag: "unms"
+        fluentd-async-connect: "true"
+    environment:
+      - UNMS_USER_ID=1000
+      - PROD=true
+      - DEMO=false
+      - HTTP_PORT=8080
+      - HTTPS_PORT=8443
+      - PUBLIC_HTTPS_PORT=443
+      - PUBLIC_WS_PORT=
+      - WS_PORT=8443
+      - BEHIND_REVERSE_PROXY=false
+      - SSL_CERT=
+      - SSL_CERT_KEY=
+      - SSL_CERT_CA=
+      - HOST_TAG=
+      - BRANCH=master

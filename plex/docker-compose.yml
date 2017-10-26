@@ -1,0 +1,17 @@
+version: '3'
+services:
+    plex:
+        container_name: plex 
+        image: linuxserver/plex
+        environment:
+          VERSION: latest
+          PGID: 1000
+          PUID: 1000
+          TZ: America/Chicago
+        network_mode: host
+        volumes:
+          - /home/geota/.config/plex:/config
+          - /home/geota/downloads/tv:/data/tv
+          - /home/geota/downloads/movies:/data/movies
+          - /home/geota/downloads/transcoding:/transcode
+        restart: always

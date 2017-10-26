@@ -1,0 +1,11 @@
+
+docker run -d --name=zm \
+-p 9191:80 \
+--privileged="true" \
+-e TZ="America/Chicago" \
+-e SHMEM="50%" \
+-e PUID="1000" \
+-e PGID="1000" \
+-v /home/geota/.config/zm/config:/config \
+-v /home/geota/.config/zm/data:/var/cache/zoneminder \
+dlandon/zoneminder

@@ -1,0 +1,15 @@
+version: '3'
+services:
+    lychee:
+        container_name: lychee
+        image: linuxserver/lychee
+        environment:
+          PGID: 1000
+          PUID: 1000
+          TZ: America/Chicago
+        ports:
+         - 9125:80
+        volumes:
+          - /home/geota/.config/lychee:/config
+          - /home/geota/pictures:/pictures
+        restart: always
